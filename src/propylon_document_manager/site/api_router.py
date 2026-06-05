@@ -3,7 +3,8 @@ from django.urls import path
 
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from propylon_document_manager.file_versions.api.views import FileVersionViewSet, DocumentView, ContentAddressableStorageView
+from propylon_document_manager.file_versions.api.views import (FileVersionViewSet, DocumentView,
+                                                               ContentAddressableStorageView, DocumentVersionsView)
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -16,6 +17,11 @@ app_name = "api"
 
 urlpatterns = [
     *router.urls,
+    path(
+        "documents/<path:file_url>/versions",
+        DocumentVersionsView.as_view(),
+        name="document-versions",
+    ),
     path(
         "documents/<path:file_url>",
         DocumentView.as_view(),
