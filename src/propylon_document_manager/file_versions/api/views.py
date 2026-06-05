@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 
@@ -94,6 +95,29 @@ class DocumentView(APIView):
                     {"detail": "File not found."},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+        return FileResponse(
+            file_version.file.open("rb"),
+            as_attachment=True,
+            filename=file_version.file_name,
+        )
+
+
+class ContentAddressableStorageView(APIView):
+    """
+    Retrieves a file by its SHA-256 content hash.
+
+    This supports Content Addressable Storage, where the file
+    is addressed by its contents instead of its document URL.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, content_hash):
+        file_version = get_object_or_404(
+            FileVersion.objects.filter(user=request.user),
+            content_hash=content_hash,
+        )
 
         return FileResponse(
             file_version.file.open("rb"),

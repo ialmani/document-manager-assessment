@@ -3,7 +3,7 @@ from django.urls import path
 
 from rest_framework.routers import DefaultRouter, SimpleRouter
 
-from propylon_document_manager.file_versions.api.views import FileVersionViewSet, DocumentView
+from propylon_document_manager.file_versions.api.views import FileVersionViewSet, DocumentView, ContentAddressableStorageView
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -20,5 +20,10 @@ urlpatterns = [
         "documents/<path:file_url>",
         DocumentView.as_view(),
         name="document",
+    ),
+    path(
+        "cas/<str:content_hash>",
+        ContentAddressableStorageView.as_view(),
+        name="content-addressable-storage",
     ),
 ]
