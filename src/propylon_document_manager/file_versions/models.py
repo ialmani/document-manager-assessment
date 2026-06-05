@@ -32,5 +32,22 @@ class User(AbstractUser):
 
 
 class FileVersion(models.Model):
-    file_name = models.fields.CharField(max_length=512)
-    version_number = models.fields.IntegerField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="file_versions",
+    )
+
+    file_name = models.CharField(max_length=512)
+    file_url = models.CharField(max_length=1024)
+    file = models.FileField(upload_to="documents/")
+    version_number = models.PositiveIntegerField(default=0)
+    content_hash = models.CharField(max_length=64, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "file_url", "version_number")
+        ordering = ["file_url", "version_number"]
+
+    def __str__(self):
+        return f"{self.file_url} v{self.version_number} ({self.user.email})"
