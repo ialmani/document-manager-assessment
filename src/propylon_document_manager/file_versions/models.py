@@ -4,6 +4,7 @@ from django.db.models import CharField, EmailField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+
 class User(AbstractUser):
     """
     Default custom user model for Propylon Document Manager.
