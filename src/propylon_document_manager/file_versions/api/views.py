@@ -150,3 +150,23 @@ class DocumentVersionsView(APIView):
             ).data,
             status=status.HTTP_200_OK,
         )
+
+
+class DocumentVersionsView(APIView):
+    """
+    Lists all versions for a document URL owned by the authenticated user.
+    Used by the frontend View Versions modal.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, file_url):
+        versions = FileVersion.objects.filter(
+            user=request.user,
+            file_url=file_url,
+        ).order_by("version_number")
+
+        return Response(
+            FileVersionSerializer(versions, many=True).data,
+            status=status.HTTP_200_OK,
+        )
